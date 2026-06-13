@@ -104,8 +104,15 @@ def hybrid_recommend(user_id: int, db: Session, n: int = 20) -> List[int]:
     for r in top:
         content_ids += content_recommend(r.movie_id, n=30, exclude=seen)
     # 去重保序
-    seen_set, content_ids = set(), [x for x in content_ids
-                                     if not (x in seen_set or seen_set.add(x))]
+    # seen_set, content_ids = set(), [x for x in content_ids
+    #                                  if not (x in seen_set or seen_set.add(x))]
+    seen_set = set()
+    unique_content_ids = []
+    for x in content_ids:
+        if x not in seen_set:
+            seen_set.add(x)
+            unique_content_ids.append(x)
+    content_ids = unique_content_ids
 
     cf_ids = usercf_recommend(user_id, db, n=n)
 
